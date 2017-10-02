@@ -1,0 +1,64 @@
+Installation steps for cassandra:(Remote) & Password authorizations.
+
+
+->We need apache-cassandra-3.0.0 or later version.
+->Next commons-daemons-bin-1.0.15-windows folder.
+->And then python 2.7 version .exe.Install the python in c Drive.
+->Keep apache-cassandra dump & commons daemons dump in c Drive.
+->Now set following path in environment variables as user variables.
+
+1.-> 	Path
+  -> 	;c:\python2.7 ->python path
+2.->	python path
+	c:\python2.7\lib;c:\python\Dll's;c:\python\lib\lib-tk;
+3.->	CASSANDRA_HOME
+	c:\apache-cassandra-3.0.0
+4.->	PRUNSRV
+	c:\commons-daemon-1.0.15-bin-windows\amd64\pruncrv
+5.->	JAVA_HOME
+	C:\programfiles\java\jdk1.8_45
+
+-> If all at done open cmd prompt.
+-> goto cassandra bin path
+	c:\apache-cassandra-3.0.0\bin>
+-> Run
+	c:\apache-cassandra-3.0.0\bin>cassandra -Install
+-> The installation process will done & at final line of shows cassandra got installed with superuser 'cassandra'.
+-> Now open cmd & go to cassandra bin & run cassandra '.bat' file.
+-> Now open new cmd & go to bin path of cassandra & run 'cqlsh'
+-> Now cqlsh run & opens cassandra Data base as with connection ip '127.0.0.1'
+   cqlsh>
+-> Now to change this ip as remote with our ip:
+-> open cassandra\bin folder it consists of 'cqlsh.py' file open that file in notepad++ change its DEFAULT_HOST = '127.0.0.1' as your ip DEFAULT_HOST = '172.17.7.57' save that file & close it.
+-> open cassandra\conf folder it consists of cassandra.yaml file open and edit in notepad++.
+-> Make the following changes in ip.
+-> change its start_rpc:false as "start_rpc:true"
+-> change in listen_address:localhost as "listen_address:172.17.7.199"
+-> change in broadcast_rpc_address:1.2.3.4 and comment out as"broadcast_rpc_address:172.17.7.199"
+-> change #rpc_address:172.17.7.199 and comment it.
+-> If you want to make incremental backup change incremental_backup:false as "incremental_backup:true"
+-> set row_cache_size_in_mb:10
+-> set row_cache_save_period:60
+-> save the changes in .yaml file & close.
+-> open cmd and goto cassandra bin folder and run cassandra.bat file
+-> Now open new cmd and goto cassandra bin and run cqlsh it opens with your local ip address and connects to DB.
+-> Now to make the cassandra as password authorization.
+-> open cassandra\conf folder open cassandra.yaml file in notepad++
+-> ADD the following steps:
+-> Add the below line "authenticator:org.apache.cassandra.auth.passwordAuthenticator" above the #-AllowAllAuthenticator perfosts no checks set it to.
+-> Now add the below line of 'authenticator:AllowAllAuthenticator' this means it allows without password to make as password auth.comment with '#' AllowAllAuthenticator and add as "authenticator:PasswordAuthenticator"
+-> Next add the below line above the #-AllowAllAuthorizer allows any action to any user add above this line as "authorizer:org.apache.cassandra.auth.cassandraAuthorizer" and comment the line as #authorizer:AllowAllAuthorizer and add as authorizer:cassandraAuthorizer
+-> Now save the file and close it.
+-> Now open cmd and go to cassandra bin folder and run "cassandra.bat" file.
+-> Now open new cmd goto cassandra bin folder and run as c:\apa-ca-3.0.0\bin>cqlsh -u cassandra -p cassandra it opens with authorizations as 
+	cassandra@cqlsh>
+
+
+-> Now to create a new user in cassandra as 'SUPERUSER' follow the cmd
+	cassandra@cqlsh>create user miracle with password 'Miracle1' SUPERUSER; CLICK ENTER.
+	It will create a new super user with all authorizations.
+-> We can also create a normal user without any permission to the new user as
+-> cassandra@cqlsh>create user mssusr with password 'mssusr';
+	Now it creates as new user as mssusr without any permissions to create or select or delete.
+
+	
